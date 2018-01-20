@@ -120,6 +120,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="code" class="section level1 unnumbered">
 <h1>Code</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#importing relevant libraries</span>
+<span class="kw">library</span>(knitr)
 <span class="kw">library</span>(data.table)
 <span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(ggplot2)
@@ -137,63 +138,82 @@ babies =<span class="st"> </span>data[, <span class="kw">c</span>(<span class="d
 
 <span class="co">#converting baby data to long format and renaming columns</span>
 babies =<span class="st"> </span><span class="kw">reshape</span>(babies, <span class="dt">varying =</span> <span class="kw">names</span>(babies[, -<span class="dv">1</span>]), <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>, <span class="dt">direction =</span> <span class="st">&quot;long&quot;</span>)
-babies =<span class="st"> </span><span class="kw">select</span>(babies, caseid, bord, b0, b1, b2, b7, b9)
-<span class="kw">names</span>(babies) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caseid&quot;</span>, <span class="st">&quot;bord&quot;</span>, <span class="st">&quot;twin&quot;</span>, <span class="st">&quot;month&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;months_lived&quot;</span>, <span class="st">&quot;lives_with&quot;</span>)
+babies =<span class="st"> </span><span class="kw">select</span>(babies, caseid, bord, b0, b1, b2, b7, b9, b4)
+<span class="kw">names</span>(babies) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caseid&quot;</span>, <span class="st">&quot;bord&quot;</span>, <span class="st">&quot;twin&quot;</span>, <span class="st">&quot;month&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;months_lived&quot;</span>, <span class="st">&quot;lives_with&quot;</span>, <span class="st">&quot;gender&quot;</span>)
 
 <span class="co">#removing lines for mothers that didn&#39;t have a baby</span>
 babies =<span class="st"> </span>babies[<span class="kw">complete.cases</span>(babies[, <span class="st">&quot;bord&quot;</span>]), ]
 <span class="co">#creating dummy variable for babies who die before reaching one year</span>
-babies$inf_death =<span class="st"> </span><span class="kw">as.numeric</span>(babies$months_lived &lt;<span class="st"> </span><span class="dv">12</span>)
+babies$inf_death =<span class="st"> </span><span class="kw">as.numeric</span>(babies$months_lived &lt;<span class="st"> </span><span class="dv">13</span>)
 <span class="co">#setting inf_death to 0 for babies that are still alive</span>
 babies[<span class="kw">is.na</span>(babies$inf_death), <span class="st">&quot;inf_death&quot;</span>] =<span class="st"> </span><span class="dv">0</span>
 
 <span class="co">#selecting relevant mother data</span>
-mothers =<span class="st"> </span><span class="kw">select</span>(mothers, caseid, v005, v006, v007, v009, v010, v113, v116, v119, 
+mothers =<span class="st"> </span><span class="kw">select</span>(mothers, caseid, v005, v113, v116, v119, 
                  v120, v121, v122, v123, v124, v125, v127, v128, v129, v130, v131, v133, 
                  v135, v136, v137, v150, v151, v152, v153, v155, v161, v191, v201, v212)
 <span class="co">#renaming to help interpret results</span>
-<span class="kw">names</span>(mothers) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caseid&quot;</span>, <span class="st">&quot;samp_weight&quot;</span>, <span class="st">&quot;monthint&quot;</span>, <span class="st">&quot;yearint&quot;</span>, <span class="st">&quot;monthmom&quot;</span>, <span class="st">&quot;yearmom&quot;</span>, 
-                   <span class="st">&quot;water&quot;</span>, <span class="st">&quot;toilet&quot;</span>, <span class="st">&quot;electricity&quot;</span>, <span class="st">&quot;radio&quot;</span>, <span class="st">&quot;tv&quot;</span>, <span class="st">&quot;fridge&quot;</span>,
+<span class="kw">names</span>(mothers) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caseid&quot;</span>, <span class="st">&quot;samp_weight&quot;</span>, <span class="st">&quot;water&quot;</span>, <span class="st">&quot;toilet&quot;</span>, <span class="st">&quot;electricity&quot;</span>, <span class="st">&quot;radio&quot;</span>, <span class="st">&quot;tv&quot;</span>, <span class="st">&quot;fridge&quot;</span>,
                    <span class="st">&quot;bike&quot;</span>, <span class="st">&quot;motorcycle&quot;</span>, <span class="st">&quot;car&quot;</span>, <span class="st">&quot;floor&quot;</span>, <span class="st">&quot;walls&quot;</span>, <span class="st">&quot;roof&quot;</span>, <span class="st">&quot;religion&quot;</span>, <span class="st">&quot;ethnicity&quot;</span>, 
-                   <span class="st">&quot;education&quot;</span>, <span class="st">&quot;usual&quot;</span>, <span class="st">&quot;housemem&quot;</span>, <span class="st">&quot;housechild&quot;</span>,<span class="st">&quot;reltohead&quot;</span>, <span class="st">&quot;sexhead&quot;</span>, 
-                   <span class="st">&quot;agehead&quot;</span>, <span class="st">&quot;teleph&quot;</span>, <span class="st">&quot;literacy&quot;</span>, <span class="st">&quot;cookingfuel&quot;</span>, <span class="st">&quot;wealthindex&quot;</span>, <span class="st">&quot;childrenborn&quot;</span>, 
-                   <span class="st">&quot;agefirstbirth&quot;</span>)
+                   <span class="st">&quot;education&quot;</span>, <span class="st">&quot;usual&quot;</span>, <span class="st">&quot;housemem&quot;</span>, <span class="st">&quot;housechild&quot;</span>,<span class="st">&quot;reltohead&quot;</span>, <span class="st">&quot;sexhead&quot;</span>, <span class="st">&quot;agehead&quot;</span>, 
+                   <span class="st">&quot;teleph&quot;</span>, <span class="st">&quot;literacy&quot;</span>, <span class="st">&quot;cookingfuel&quot;</span>, <span class="st">&quot;wealthindex&quot;</span>, <span class="st">&quot;childrenborn&quot;</span>, <span class="st">&quot;agefirstbirth&quot;</span>)
 
 full =<span class="st"> </span><span class="kw">merge</span>(mothers, babies)
 
-<span class="co">#removing 9, 99, and 999 (NA codes) from rows that do not contain true 9&#39;s</span>
-rows =<span class="st"> </span>full[, -<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">24</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">34</span>, <span class="dv">36</span>, <span class="dv">38</span>)]
+<span class="co">#removing 9 from rows that do not contain true 9&#39;s</span>
+rows =<span class="st"> </span>full[, -<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">23</span>, <span class="dv">31</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">35</span>, <span class="dv">37</span>)]
 rows[rows ==<span class="st"> &quot;9&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
-rows[rows ==<span class="st"> &quot;99&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
-rows[rows ==<span class="st"> &quot;999&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
-full[, -<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">24</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">34</span>, <span class="dv">36</span>, <span class="dv">38</span>)] =<span class="st"> </span>rows
+full[, -<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">20</span>, <span class="dv">22</span>, <span class="dv">23</span>, <span class="dv">31</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">35</span>, <span class="dv">37</span>)] =<span class="st"> </span>rows
+
+<span class="co">#removing 99, 999 (NA codes)</span>
+full[full ==<span class="st"> &quot;99&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
+full[full ==<span class="st"> &quot;999&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
 full[full ==<span class="st"> &quot;&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
+full =<span class="st"> </span><span class="kw">droplevels</span>(full)
 
-<span class="co">#cols &lt;- c(&quot;A&quot;, &quot;C&quot;, &quot;D&quot;, &quot;H&quot;)</span>
-<span class="co">#data[cols] &lt;- lapply(data[cols], factor)</span>
-
-<span class="co">#full[full == &quot;no&quot;] = 0</span>
-<span class="co">#full[full == &quot;yes&quot;] = 1</span></code></pre></div>
+<span class="co">#in binary variables, removing &quot;not a dejure resident&quot;, since there is a variable containing that information, </span>
+<span class="co">#and it is redundant. Converting everything to binary where applicable</span>
+<span class="co">#converting factors to characters so they are editable</span>
+full[, <span class="kw">c</span>(<span class="dv">5</span>:<span class="dv">11</span>, <span class="dv">24</span>)] &lt;-<span class="st"> </span><span class="kw">lapply</span>(full[, <span class="kw">c</span>(<span class="dv">5</span>:<span class="dv">11</span>, <span class="dv">24</span>)], as.character)
+full[full ==<span class="st"> &quot;no&quot;</span>] =<span class="st"> &quot;0&quot;</span>
+full[full ==<span class="st"> &quot;yes&quot;</span>] =<span class="st"> &quot;1&quot;</span>
+<span class="co">#converting characters to numeric</span>
+full[, <span class="kw">c</span>(<span class="dv">5</span>:<span class="dv">11</span>, <span class="dv">24</span>)] &lt;-<span class="st"> </span><span class="kw">lapply</span>(full[, <span class="kw">c</span>(<span class="dv">5</span>:<span class="dv">11</span>, <span class="dv">24</span>)], as.numeric)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#use kable function to print head of dataset in a more appealing way</span>
+<span class="kw">kable</span>(full[<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">32</span>, <span class="dv">234</span>, <span class="dv">499</span>), <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">27</span>, <span class="dv">30</span>, <span class="dv">35</span>, <span class="dv">36</span>)])</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#chunk is pushed right by the html wrapper</span>
 
 <span class="co">#getting the group id from the combined caseid</span>
 full$location =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(<span class="kw">as.character</span>(full$caseid), <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>), <span class="st">`</span><span class="dt">[</span><span class="st">`</span>, <span class="dv">2</span>)
 
-
+<span class="co">#aggregate data by location (aka town), and find the mean wealth index and mortality rate.</span>
 means =<span class="st"> </span>full %&gt;%
 <span class="kw">select</span>(location, wealthindex, inf_death) %&gt;%
 <span class="kw">group_by</span>(location) %&gt;%
 <span class="kw">summarise</span>(<span class="dt">wealthindex =</span> <span class="kw">mean</span>(wealthindex),<span class="dt">inf_death =</span> <span class="kw">mean</span>(inf_death))
 
-<span class="kw">ggplot</span>(means) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> wealthindex, <span class="dt">y =</span> inf_death)) +<span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Wealth Index&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Infant Mortality Rate&quot;</span>) +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;            Wealth and Infant Mortality in Nigeria&quot;</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">loc =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">fread</span>(<span class="st">&quot;Locations.csv&quot;</span>))
+<span class="co">#scatterplot of mortality rate by wealth where each point is a town.</span>
+<span class="kw">ggplot</span>(means) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> wealthindex, <span class="dt">y =</span> inf_death)) +<span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Wealth Index&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Infant Mortality Rate&quot;</span>) +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;            Wealth and Infant Mortality in Nigeria&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#import lat long data</span>
+loc =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">fread</span>(<span class="st">&quot;Locations.csv&quot;</span>))
+<span class="co">#merge with aggregated town level data</span>
 loc =<span class="st"> </span><span class="kw">merge</span>(loc, means, <span class="dt">by.x =</span> <span class="st">&quot;v001&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;location&quot;</span>)
 
+<span class="co">#get the base map to overlay data on</span>
 map =<span class="st"> </span><span class="kw">get_map</span>(<span class="dt">location =</span> <span class="kw">c</span>(<span class="dt">lon =</span> <span class="fl">8.5</span>, <span class="dt">lat =</span> <span class="fl">8.5</span>), <span class="dt">zoom =</span> <span class="dv">6</span>)
+
+<span class="co">#create map, color dots, and remove axes</span>
 <span class="kw">ggmap</span>(map) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> lon, <span class="dt">y =</span> lat, <span class="dt">color =</span> inf_death), <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">data =</span> loc, <span class="dt">alpha =</span> .<span class="dv">75</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_colour_gradient</span>(<span class="dt">low =</span> <span class="kw">muted</span>(<span class="st">&quot;green&quot;</span>), <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">guide =</span> <span class="st">&quot;colourbar&quot;</span>) +<span class="st"> </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;% Inf. Mortality&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.text.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.title.y=</span><span class="kw">element_blank</span>(), <span class="dt">axis.text.y=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.y=</span><span class="kw">element_blank</span>())</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">glm</span>(inf_death~water+toilet+electricity+radio+tv+fridge+bike+motorcycle+car+floor+walls+roof+religion+ethnicity+education+usual+housemem+reltohead+sexhead+agehead+teleph+literacy+cookingfuel+wealthindex+agefirstbirth+bord+twin+lives_with, <span class="dt">data =</span> full, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">&#39;logit&#39;</span>))</code></pre></div>
+<span class="st">  </span><span class="kw">scale_colour_gradient</span>(<span class="dt">low =</span> <span class="kw">muted</span>(<span class="st">&quot;green&quot;</span>), <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">guide =</span> <span class="st">&quot;colourbar&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;% Inf. Mortality&quot;</span>) +
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.text.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.x=</span><span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title.y=</span><span class="kw">element_blank</span>(), <span class="dt">axis.text.y=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.y=</span><span class="kw">element_blank</span>())</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#model infant mortality using just wealth index</span>
+m_wealth =<span class="st"> </span><span class="kw">glm</span>(inf_death~wealthindex, <span class="dt">data =</span> full, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">&#39;logit&#39;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#more comprehensive model on infant mortality. </span>
+m_full =<span class="st"> </span><span class="kw">glm</span>(inf_death~education+housemem+wealthindex+agefirstbirth+bord+gender+(gender*wealthindex), <span class="dt">data =</span> full, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">&#39;logit&#39;</span>))
+<span class="kw">summary</span>(m_full)$coefficients</code></pre></div>
 
 </div>
             </section>
@@ -227,7 +247,7 @@ gitbook.start({
 },
 "fontsettings": {
 "theme": "white",
-"family": "sans",
+"family": "serif",
 "size": 2
 },
 "edit": {

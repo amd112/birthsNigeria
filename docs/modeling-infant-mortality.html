@@ -119,7 +119,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="modeling-infant-mortality" class="section level1 unnumbered">
 <h1>Modeling Infant Mortality</h1>
-<pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
+<p>Running a regression on infant mortality, using only the wealth index as a predictor we get an intercept of -2.2479686, with a coefficient of -0.2872811 for the wealth index. The coefficient for the wealth index shows that there is a negative relationship between the two variables, higher wealth indicates lower infant mortality rates. The coefficient can be interpretated as the additive effect of the log of the odds for a unit increase in the wealth index. Causation cannot be inferred from this model.</p>
+<p>In order to look at the relationship between gender and wealth on infant mortality, we regress infant mortality against years of education, number of house members, family wealth index, age of mothers first birth, number of younger siblings, gender, and the interaction between gender and family wealth index. In this full model the coefficient for the interaction of interest has a p-value of 0.72, so we fail to reject the null that there is no relationship between the interaction and infant mortality. The best predictors appear to be mother’s years of education, age of first birth, and the gender of the baby.</p>
+<pre><code>##                           Estimate  Std. Error     z value     Pr(&gt;|z|)
+## (Intercept)            -1.49422561 0.143851167 -10.3873026 2.832504e-25
+## education              -0.03923775 0.007702387  -5.0942322 3.501573e-07
+## housemem               -0.01226998 0.006812333  -1.8011426 7.168040e-02
+## wealthindex            -0.10100417 0.050141698  -2.0143748 4.397020e-02
+## agefirstbirth          -0.03968046 0.006446394  -6.1554509 7.486420e-10
+## bord                    0.03346630 0.011190563   2.9905823 2.784461e-03
+## gendermale              0.21672761 0.056287651   3.8503581 1.179452e-04
+## wealthindex:gendermale -0.03322916 0.058960691  -0.5635816 5.730389e-01</code></pre>
 
 </div>
             </section>
@@ -153,7 +163,7 @@ gitbook.start({
 },
 "fontsettings": {
 "theme": "white",
-"family": "sans",
+"family": "serif",
 "size": 2
 },
 "edit": {

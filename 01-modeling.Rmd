@@ -1,10 +1,19 @@
 # Modeling Infant Mortality {-}
 
 ```{r initial_model, echo = FALSE, warning = FALSE}
+#model infant mortality using just wealth index
 m_wealth = glm(inf_death~wealthindex, data = full, family = binomial(link='logit'))
-
-logodds = function(x) {return(exp(x)/(1+exp(x)))}
-
-m_full = glm(inf_death~electricity+radio+tv+fridge+bike+motorcycle+car+teleph+education+housemem+literacy+wealthindex+(wealthindex*education)+agefirstbirth+bord+gender+(gender*wealthindex), data = full, family = binomial(link='logit'))
 ```
+
+Running a regression on infant mortality, using only the wealth index as a predictor we get an intercept of `r m_wealth$coefficients[1]`, with a coefficient of `r m_wealth$coefficients[2]` for the wealth index. The coefficient for the wealth index shows that there is a negative relationship between the two variables, higher wealth indicates lower infant mortality rates. The coefficient can be interpretated as the additive effect of the log of the odds for a unit increase in the wealth index. Causation cannot be inferred from this model.
+
+In order to look at the relationship between gender and wealth on infant mortality, we regress infant mortality against years of education, number of house members, family wealth index, age of mothers first birth, number of younger siblings, gender, and the interaction between gender and family wealth index. In this full model the coefficient for the interaction of interest has a p-value of 0.72, so we fail to reject the null that there is no relationship between the interaction and infant mortality. The best predictors appear to be mother's years of education, age of first birth, and the gender of the baby.
+
+```{r full_model, echo = FALSE}
+#more comprehensive model on infant mortality. 
+m_full = glm(inf_death~education+housemem+wealthindex+agefirstbirth+bord+gender+(gender*wealthindex), data = full, family = binomial(link='logit'))
+summary(m_full)$coefficients
+```
+
+
 

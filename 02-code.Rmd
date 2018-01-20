@@ -6,6 +6,9 @@
 ```{r ref.label="importing", eval = FALSE}
 ```
 
+```{r ref.label="print_data", eval = FALSE}
+```
+
 ```{r ref.label="scatterplot", eval = FALSE}
 ```
 
@@ -13,4 +16,7 @@
 ```
 
 ```{r ref.label="initial_model", eval = FALSE}
+```
+
+```{r ref.label="full_model", eval = FALSE}
 ```

@@ -1,8 +1,13 @@
 ---
 site: bookdown::bookdown_site
 output:
-  bookdown::gitbook: default
+  bookdown::gitbook: 
+    config:
+      fontsettings:
+        theme: white
+        family: serif
 new_session: no
+
 ---
 
 ```{r libraries, include = FALSE}
@@ -63,7 +68,8 @@ full[full == "999"] = NA
 full[full == ""] = NA
 full = droplevels(full)
 
-#in binary variables, removing "not a dejure resident", since there is a variable containing that information, and it is redundant. Converting everything to binary where applicable
+#in binary variables, removing "not a dejure resident", since there is a variable containing that information, 
+#and it is redundant. Converting everything to binary where applicable
 #converting factors to characters so they are editable
 full[, c(5:11, 24)] <- lapply(full[, c(5:11, 24)], as.character)
 full[full == "no"] = "0"
@@ -74,25 +80,28 @@ full[, c(5:11, 24)] <- lapply(full[, c(5:11, 24)], as.numeric)
 
 Using data from a survey conducted on births in Nigeria, we investigate infant mortality. The first task is to change the wide format data (where each row represents a mother, and columns indicate each of her children) to long format data (where each row represents a child, and columns can contain mother level data.) The complete data munging leaves the data in a long format, with each column of data in the appropriate factor or numeric format. A sample of some columns is shown below.
 
-```{r, echo = FALSE}
-kable(full[c(3, 10, 32, 234, 499), c(1, 27, 30, 35, 36)], caption = "Subset of long format data.")
+```{r print_data, echo = FALSE}
+#use kable function to print head of dataset in a more appealing way
+kable(full[c(3, 10, 32, 234, 499), c(1, 27, 30, 35, 36)])
 ```
 
 
 <div style= "float:right;position: relative;">
-```{r scatterplot, echo = FALSE, fig.height = 3, fig.width = 5}
+```{r scatterplot, echo = FALSE, fig.height = 4, fig.width = 5}
 #chunk is pushed right by the html wrapper
 
 #getting the group id from the combined caseid
 full$location = sapply(strsplit(as.character(full$caseid), "\\s+"), `[`, 2)
 
-
+#aggregate data by location (aka town), and find the mean wealth index and mortality rate.
 means = full %>%
 select(location, wealthindex, inf_death) %>%
 group_by(location) %>%
 summarise(wealthindex = mean(wealthindex),inf_death = mean(inf_death))
 
-ggplot(means) + geom_point(aes(x = wealthindex, y = inf_death)) + xlab("Wealth Index") + ylab("Infant Mortality Rate") + ggtitle("            Wealth and Infant Mortality in Nigeria")
+#scatterplot of mortality rate by wealth where each point is a town.
+ggplot(means) + geom_point(aes(x = wealthindex, y = inf_death)) + xlab("Wealth Index") + 
+  ylab("Infant Mortality Rate") + ggtitle("            Wealth and Infant Mortality in Nigeria")
 ```
 </div>
 
@@ -102,12 +111,19 @@ One of the questions of interest is the prevelance of infant mortality in the ar
 To look at the variation in average infant mortality between clusters across space, we plot the locations of each of the sampled towns, coloring points by their respective rates of infant mortality. It appears that the coastal regions tend to have lower infant mortality rates, with the inland regions more commonly showing high mortality rates. The high mortality areas seem to correspond to the areas with [low per capita GDP](http://www.geocurrents.info/wp-content/uploads/2014/06/Nigeria-per-capita-GDP-map-1024x760.png).
 
 ```{r map, echo = FALSE, fig.height = 7, fig.width = 7, message = FALSE}
+#import lat long data
 loc = as.data.frame(fread("Locations.csv"))
+#merge with aggregated town level data
 loc = merge(loc, means, by.x = "v001", by.y = "location")
 
+#get the base map to overlay data on
 map = get_map(location = c(lon = 8.5, lat = 8.5), zoom = 6)
+
+#create map, color dots, and remove axes
 ggmap(map) + geom_point(aes(x = lon, y = lat, color = inf_death), size = 2, data = loc, alpha = .75) + 
-  scale_colour_gradient(low = muted("green"), high = "red", guide = "colourbar") + labs(color = "% Inf. Mortality") +
-  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank())
+  scale_colour_gradient(low = muted("green"), high = "red", guide = "colourbar") + 
+  labs(color = "% Inf. Mortality") +
+  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), 
+        axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank())
 ```
 
