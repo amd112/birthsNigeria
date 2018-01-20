@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="generator" content="bookdown 0.5.15 and GitBook 2.6.7">
+
+  <meta property="og:title" content="" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+
+<link rel="next" href="modeling-infant-mortality.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Births in Nigeria</a></li>
+<li class="chapter" data-level="" data-path="modeling-infant-mortality.html"><a href="modeling-infant-mortality.html"><i class="fa fa-check"></i>Modeling Infant Mortality</a></li>
+<li class="chapter" data-level="" data-path="code.html"><a href="code.html"><i class="fa fa-check"></i>Code</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!--bookdown:title:end-->
+<!--bookdown:title:start-->
+<div id="births-in-nigeria" class="section level1 unnumbered">
+<h1>Births in Nigeria</h1>
+<p>Using data from a survey conducted on births in Nigeria, we investigate infant mortality. The first task is to change the wide format data (where each row represents a mother, and columns indicate each of her children) to long format data (where each row represents a child, and columns can contain mother level data.) The complete data munging leaves the data in a long format, with each column of data in the appropriate factor or numeric format. A sample of some columns is shown below.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-1">Table 1: </span>Subset of long format data.</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">caseid</th>
+<th align="right">wealthindex</th>
+<th align="right">bord</th>
+<th align="left">lives_with</th>
+<th align="left">gender</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3</td>
+<td align="left">1 1 2</td>
+<td align="right">-1.42056</td>
+<td align="right">3</td>
+<td align="left">lives elsewhere</td>
+<td align="left">female</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td align="left">1 2 2</td>
+<td align="right">-1.35903</td>
+<td align="right">6</td>
+<td align="left">respondent</td>
+<td align="left">female</td>
+</tr>
+<tr class="odd">
+<td>32</td>
+<td align="left">1 8 2</td>
+<td align="right">-0.97078</td>
+<td align="right">5</td>
+<td align="left">lives elsewhere</td>
+<td align="left">female</td>
+</tr>
+<tr class="even">
+<td>234</td>
+<td align="left">3 14 3</td>
+<td align="right">-1.31134</td>
+<td align="right">1</td>
+<td align="left">lives elsewhere</td>
+<td align="left">male</td>
+</tr>
+<tr class="odd">
+<td>499</td>
+<td align="left">6 15 2</td>
+<td align="right">-0.93215</td>
+<td align="right">2</td>
+<td align="left">respondent</td>
+<td align="left">female</td>
+</tr>
+</tbody>
+</table>
+<div style="float:right;position: relative;">
+<p><img src="_main_files/figure-html/scatterplot-1.png" width="480" /></p>
+</div>
+<p>One of the questions of interest is the prevelance of infant mortality in the area. This indicator variable is calculated by finding the which observations have an age at death less than or equal to 12 months. This survey is a multilevel cluster sample, with the highest level of clustering at the town level. To delve in to the differences in infant mortality across clusters, we first look at the scatterplot of the infant mortality rate and the average wealth index in a town. We appear to see a negative correlation between the two variables, where towns with a high wealth index show a lower infant mortality rate.</p>
+<p>To look at the variation in average infant mortality between clusters across space, we plot the locations of each of the sampled towns, coloring points by their respective rates of infant mortality. It appears that the coastal regions tend to have lower infant mortality rates, with the inland regions more commonly showing high mortality rates. The high mortality areas seem to correspond to the areas with <a href="http://www.geocurrents.info/wp-content/uploads/2014/06/Nigeria-per-capita-GDP-map-1024x760.png">low per capita GDP</a>.</p>
+<p><img src="_main_files/figure-html/map-1.png" width="672" /></p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="modeling-infant-mortality.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

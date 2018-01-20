@@ -1,0 +1,16 @@
+# Code {-}
+
+```{r ref.label="libraries", eval = FALSE}
+```
+
+```{r ref.label="importing", eval = FALSE}
+```
+
+```{r ref.label="scatterplot", eval = FALSE}
+```
+
+```{r ref.label="map", eval = FALSE}
+```
+
+```{r ref.label="initial_model", eval = FALSE}
+```

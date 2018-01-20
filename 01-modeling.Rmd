@@ -1,0 +1,10 @@
+# Modeling Infant Mortality {-}
+
+```{r initial_model, echo = FALSE, warning = FALSE}
+m_wealth = glm(inf_death~wealthindex, data = full, family = binomial(link='logit'))
+
+logodds = function(x) {return(exp(x)/(1+exp(x)))}
+
+m_full = glm(inf_death~electricity+radio+tv+fridge+bike+motorcycle+car+teleph+education+housemem+literacy+wealthindex+(wealthindex*education)+agefirstbirth+bord+gender+(gender*wealthindex), data = full, family = binomial(link='logit'))
+```
+

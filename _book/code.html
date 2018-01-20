@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="generator" content="bookdown 0.5.15 and GitBook 2.6.7">
+
+  <meta property="og:title" content="" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="modeling-infant-mortality.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Births in Nigeria</a></li>
+<li class="chapter" data-level="" data-path="modeling-infant-mortality.html"><a href="modeling-infant-mortality.html"><i class="fa fa-check"></i>Modeling Infant Mortality</a></li>
+<li class="chapter" data-level="" data-path="code.html"><a href="code.html"><i class="fa fa-check"></i>Code</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="code" class="section level1 unnumbered">
+<h1>Code</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#importing relevant libraries</span>
+<span class="kw">library</span>(data.table)
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(ggmap)
+<span class="kw">library</span>(scales)
+
+<span class="co">#setting seed to ensure that randomized calculations are constant</span>
+<span class="kw">set.seed</span>(<span class="dv">50</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#importing file, removing column of ids</span>
+data =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">fread</span>(<span class="st">&quot;MotherData.csv&quot;</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>))
+
+<span class="co">#splitting data to mother related data and baby related data</span>
+mothers =<span class="st"> </span>data[, <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">78</span>, <span class="dv">439</span>:<span class="kw">ncol</span>(data))]
+babies =<span class="st"> </span>data[, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">79</span>:<span class="dv">438</span>)]
+
+<span class="co">#converting baby data to long format and renaming columns</span>
+babies =<span class="st"> </span><span class="kw">reshape</span>(babies, <span class="dt">varying =</span> <span class="kw">names</span>(babies[, -<span class="dv">1</span>]), <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>, <span class="dt">direction =</span> <span class="st">&quot;long&quot;</span>)
+babies =<span class="st"> </span><span class="kw">select</span>(babies, caseid, bord, b0, b1, b2, b7, b9)
+<span class="kw">names</span>(babies) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caseid&quot;</span>, <span class="st">&quot;bord&quot;</span>, <span class="st">&quot;twin&quot;</span>, <span class="st">&quot;month&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;months_lived&quot;</span>, <span class="st">&quot;lives_with&quot;</span>)
+
+<span class="co">#removing lines for mothers that didn&#39;t have a baby</span>
+babies =<span class="st"> </span>babies[<span class="kw">complete.cases</span>(babies[, <span class="st">&quot;bord&quot;</span>]), ]
+<span class="co">#creating dummy variable for babies who die before reaching one year</span>
+babies$inf_death =<span class="st"> </span><span class="kw">as.numeric</span>(babies$months_lived &lt;<span class="st"> </span><span class="dv">12</span>)
+<span class="co">#setting inf_death to 0 for babies that are still alive</span>
+babies[<span class="kw">is.na</span>(babies$inf_death), <span class="st">&quot;inf_death&quot;</span>] =<span class="st"> </span><span class="dv">0</span>
+
+<span class="co">#selecting relevant mother data</span>
+mothers =<span class="st"> </span><span class="kw">select</span>(mothers, caseid, v005, v006, v007, v009, v010, v113, v116, v119, 
+                 v120, v121, v122, v123, v124, v125, v127, v128, v129, v130, v131, v133, 
+                 v135, v136, v137, v150, v151, v152, v153, v155, v161, v191, v201, v212)
+<span class="co">#renaming to help interpret results</span>
+<span class="kw">names</span>(mothers) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caseid&quot;</span>, <span class="st">&quot;samp_weight&quot;</span>, <span class="st">&quot;monthint&quot;</span>, <span class="st">&quot;yearint&quot;</span>, <span class="st">&quot;monthmom&quot;</span>, <span class="st">&quot;yearmom&quot;</span>, 
+                   <span class="st">&quot;water&quot;</span>, <span class="st">&quot;toilet&quot;</span>, <span class="st">&quot;electricity&quot;</span>, <span class="st">&quot;radio&quot;</span>, <span class="st">&quot;tv&quot;</span>, <span class="st">&quot;fridge&quot;</span>,
+                   <span class="st">&quot;bike&quot;</span>, <span class="st">&quot;motorcycle&quot;</span>, <span class="st">&quot;car&quot;</span>, <span class="st">&quot;floor&quot;</span>, <span class="st">&quot;walls&quot;</span>, <span class="st">&quot;roof&quot;</span>, <span class="st">&quot;religion&quot;</span>, <span class="st">&quot;ethnicity&quot;</span>, 
+                   <span class="st">&quot;education&quot;</span>, <span class="st">&quot;usual&quot;</span>, <span class="st">&quot;housemem&quot;</span>, <span class="st">&quot;housechild&quot;</span>,<span class="st">&quot;reltohead&quot;</span>, <span class="st">&quot;sexhead&quot;</span>, 
+                   <span class="st">&quot;agehead&quot;</span>, <span class="st">&quot;teleph&quot;</span>, <span class="st">&quot;literacy&quot;</span>, <span class="st">&quot;cookingfuel&quot;</span>, <span class="st">&quot;wealthindex&quot;</span>, <span class="st">&quot;childrenborn&quot;</span>, 
+                   <span class="st">&quot;agefirstbirth&quot;</span>)
+
+full =<span class="st"> </span><span class="kw">merge</span>(mothers, babies)
+
+<span class="co">#removing 9, 99, and 999 (NA codes) from rows that do not contain true 9&#39;s</span>
+rows =<span class="st"> </span>full[, -<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">24</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">34</span>, <span class="dv">36</span>, <span class="dv">38</span>)]
+rows[rows ==<span class="st"> &quot;9&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
+rows[rows ==<span class="st"> &quot;99&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
+rows[rows ==<span class="st"> &quot;999&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
+full[, -<span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">21</span>, <span class="dv">23</span>, <span class="dv">24</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">34</span>, <span class="dv">36</span>, <span class="dv">38</span>)] =<span class="st"> </span>rows
+full[full ==<span class="st"> &quot;&quot;</span>] =<span class="st"> </span><span class="ot">NA</span>
+
+<span class="co">#cols &lt;- c(&quot;A&quot;, &quot;C&quot;, &quot;D&quot;, &quot;H&quot;)</span>
+<span class="co">#data[cols] &lt;- lapply(data[cols], factor)</span>
+
+<span class="co">#full[full == &quot;no&quot;] = 0</span>
+<span class="co">#full[full == &quot;yes&quot;] = 1</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#chunk is pushed right by the html wrapper</span>
+
+<span class="co">#getting the group id from the combined caseid</span>
+full$location =<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">strsplit</span>(<span class="kw">as.character</span>(full$caseid), <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>), <span class="st">`</span><span class="dt">[</span><span class="st">`</span>, <span class="dv">2</span>)
+
+
+means =<span class="st"> </span>full %&gt;%
+<span class="kw">select</span>(location, wealthindex, inf_death) %&gt;%
+<span class="kw">group_by</span>(location) %&gt;%
+<span class="kw">summarise</span>(<span class="dt">wealthindex =</span> <span class="kw">mean</span>(wealthindex),<span class="dt">inf_death =</span> <span class="kw">mean</span>(inf_death))
+
+<span class="kw">ggplot</span>(means) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> wealthindex, <span class="dt">y =</span> inf_death)) +<span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Wealth Index&quot;</span>) +<span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Infant Mortality Rate&quot;</span>) +<span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;            Wealth and Infant Mortality in Nigeria&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">loc =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">fread</span>(<span class="st">&quot;Locations.csv&quot;</span>))
+loc =<span class="st"> </span><span class="kw">merge</span>(loc, means, <span class="dt">by.x =</span> <span class="st">&quot;v001&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;location&quot;</span>)
+
+map =<span class="st"> </span><span class="kw">get_map</span>(<span class="dt">location =</span> <span class="kw">c</span>(<span class="dt">lon =</span> <span class="fl">8.5</span>, <span class="dt">lat =</span> <span class="fl">8.5</span>), <span class="dt">zoom =</span> <span class="dv">6</span>)
+<span class="kw">ggmap</span>(map) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> lon, <span class="dt">y =</span> lat, <span class="dt">color =</span> inf_death), <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">data =</span> loc, <span class="dt">alpha =</span> .<span class="dv">75</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_colour_gradient</span>(<span class="dt">low =</span> <span class="kw">muted</span>(<span class="st">&quot;green&quot;</span>), <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">guide =</span> <span class="st">&quot;colourbar&quot;</span>) +<span class="st"> </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;% Inf. Mortality&quot;</span>) +
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.text.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.x=</span><span class="kw">element_blank</span>(), <span class="dt">axis.title.y=</span><span class="kw">element_blank</span>(), <span class="dt">axis.text.y=</span><span class="kw">element_blank</span>(), <span class="dt">axis.ticks.y=</span><span class="kw">element_blank</span>())</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">glm</span>(inf_death~water+toilet+electricity+radio+tv+fridge+bike+motorcycle+car+floor+walls+roof+religion+ethnicity+education+usual+housemem+reltohead+sexhead+agehead+teleph+literacy+cookingfuel+wealthindex+agefirstbirth+bord+twin+lives_with, <span class="dt">data =</span> full, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link=</span><span class="st">&#39;logit&#39;</span>))</code></pre></div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modeling-infant-mortality.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
